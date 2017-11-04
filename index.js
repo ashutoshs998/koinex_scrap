@@ -3,7 +3,7 @@ var app = express();
 var router = express.Router();
 var db = require('./koinex_db');
 var phantomjs = require('phantomjs');
-var moment = require('moment');
+var moment = require('moment-timezone');
 var cron = require('node-cron');
 
 router.get('/fetch/koinex', function(req, res, next) {
@@ -46,7 +46,7 @@ function doScrap(URL, callback) {
         spooky.run();
     });
     spooky.on('error', function(e, stack) {
-        console.error(e);
+        // console.error(e);
         if (stack) {}
     });
     spooky.on('console', function(line) {});
@@ -59,12 +59,11 @@ function doScrap(URL, callback) {
             "LTC/INR": body.prices.LTC,
             "BCH/INR": body.prices.BCH
         };
-        var date_time = moment(new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })).format("LLL")
+        var date_time = moment(new Date()).tz('Asia/Kolkata');
         koinex_data = new db.fetch({
             price: prices,
             date: date_time,
         })
-        console.log(koinex_data)
         koinex_data.save(function(err) {
             if (err) {
                 res.status(400).json({ error: 1, message: "check email or password" });
