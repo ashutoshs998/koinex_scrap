@@ -6,6 +6,7 @@ mongoose.Promise = global.Promise;
 var conn = mongoose.connect('mongodb://localhost/koinex');
 var koinex_data = mongoose.Schema({
     price: { type: Array },
+    date: { type: String },
 }, {
     collection: 'koinex_data',
     strict: true
